@@ -1,2 +1,41 @@
 # GameLog
-Web app for tracking games (Django)
+
+GameLog — це веб-додаток для ведення щоденника геймера з можливістю додавання ігор, відстеження прогресу проходження, оцінювання, коментування та взаємодії між користувачами.
+
+## Функціонал
+
+- Реєстрація та авторизація користувачів
+- Перегляд списку ігор (List Page)
+- Пошук, фільтрація та сортування
+- Детальна сторінка гри (Detail Page)
+- Додавання ігор у бібліотеку
+- Встановлення статусу (хочу пройти / проходжу / пройшов / кинув)
+- Оцінювання ігор
+- Коментарі та лайки
+- Профіль користувача зі статистикою
+- Адмін-панель
+
+## Технології
+
+- Python
+- Django
+- SQLite
+- GitHub
+
+## Документація
+
+- Технічне завдання: `docs/technical_specification.md`
+- UML діаграми: 
+1. USE CASE
+https://mermaid.live/edit#pako:eNp1U8tu2kAU_RVr1oBiB5yJF5GiRO2mlar0sShmMYonxioeI2PUB0IiULVdVKWLiEXS16IfQAJIiATyC3f-qHcmhriF7rjce84959xxixxHHicO8WNWrxrPDl3hiucNHpfhHBayA1N5KruyB1cwlB8rrtj3wkCU4SuM4UYOYC4HeqCD7a4CVJYERj6_ZxxxP2gkiu0XTOTZavQDwvqVzOCjyFe0F7CAkaLN9l4E_PVDFvJGGX4iSwcmMIJr2YexIU_hVkmEmewZiBulElbYp5zFx1UFXMhPaGO2cepBUNMif2PzWn7-n8ilkHUdKBqjys7ue97d6BlaGut0pnpMCe0ZcImrLhE9QC1dZEIDWfgRSxD7Q2mAOTq8R2enDqIw5CIpw3cYpkGki2a49QZp51gO_zarXDyJo5OgtsnILZYL-V4H8UUfU19cIx8zwXyenuJcIe8eBiqcy75OVgWHi6eVdZwSsBGnxP770jax4EONMZbUNFJ909FO7o-15hslXVVIDl934BEniZs8R0Ieh0yVpOUKw3BJUuUhd4mDPz0Wv3KJK9qIqTPxMorCJSyOmn6VOCes1sCqWfdQymHA8LsJV__GXKDGg6gpEuJQU3MQp0XeECdv2rRAd0sls2jb9jbdtXLkLXFMq1QwTcsqWtsWVR3azpF3eq1Z2NrZ2aJ2yaaWSWmJFtt_AFtN0Cg 
+2. CLASS DIAGRAM
+https://mermaid.live/edit#pako:eNp9UsFu4jAQ_ZVojitAcRKWxIdeqNRb1Usvq0jVbDwFq4mN7ElpF_Hva5tQhNRy8nvJe2884zlAZxWBhK5H7-81bhwOrWlN4tmzJ5cdWpNlY0AGB4qYBtR9BLug2VunWnO8eJ6cfdU9nWz4jowuor_aXskeQthJw5r7lKvId07vWFsTqaOe0NOLQqYra7zVxe4ZefTJgKzN5kq6tsNAhqdC9MHx7ByFSPWCfKV9tDxFdtZwcE1_0xBaEC1k8_ndhM5dymyL_hvNr4C-7ikzuzdBlcgNVa_NG6lY81vluZlbNS-avdNM_sew1O2tpElwioEZbJxWINmNNIOBXNiBQCHNqwXeUtgNkAEqdG8thNkFzw7NH2uHs83ZcbMF-Yq9D2zcxZeddu7rqyOjyK3taBikKFIGyAN8RCYWTVE2-UrUxUosRT2DT5CFqBZ1U9aroszzQuTl8jiDf6lsvlj-bpZFJZqqKuu6KsXxPwZA8wY
+3. SEQUENCE DIAGRAM
+https://mermaid.ai/live/edit#pako:eNplkM1Kw0AUhV8l3HVb0rSTpLPoogZcuHAhbiSboRnboJnUSQLWUugPuHQh4lLwDbQi1Ir1FWbeyDupLRZ39575zjmXGUE3jThQyPhVwUWXBzHrSZaEIhQDJvO4Gw-YyK3TjMt95WSY5TzZ14KO8Rm22m5vAGqpJ_WqlnqiXvSDpd70RM__M_d6qmfqRX2ptVqoT32H7EbSMz3XU8uMllrrW_2I0MpkbMyYEnQw4RmJBQKT0mvyD1nCQxF0qn-Kjo92PlQNVR74W6vecVqqD6xW33jzFOUVVKAn4whoLgtegYTLhJkVRqGwrBDyPsceoDhGTF6EEIoxevBDztI02dpkWvT6QM_ZZYZbMYhYvv3rHcJFxOVBWogcaL1RRgAdwTVQr1mzHa_l2jbx_Jbn4OPQME7NdnH3Gi7xSbPljytwU5baNZcQ366TRpM0_brjkfEP6ZHKQg
+- Trello: https://trello.com/b/qdHWW7y2/gamelog
+
+## Команда
+
+- Ільчук  
+- Дорощенков  
+- Пахольчук  
