@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.db.models import Avg
 from .models import Game, Comment, UserGame
+from django.core.paginator import Paginator
 
 
 def home(request):
@@ -55,7 +56,13 @@ def game_list(request):
     if query:
         games = games.filter(title__icontains=query)
 
-    return render(request, 'game_list.html', {'games': games})
+    paginator = Paginator(games, 5)  # 5 ігор на сторінку
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'game_list.html', {
+        'page_obj': page_obj
+    })
 
 
 def game_detail(request, game_id):
