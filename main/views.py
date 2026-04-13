@@ -51,12 +51,17 @@ def logout_view(request):
 
 def game_list(request):
     query = request.GET.get('q')
+    game_type = request.GET.get('type')
+
     games = Game.objects.all()
 
     if query:
         games = games.filter(title__icontains=query)
 
-    paginator = Paginator(games, 5)  # 5 ігор на сторінку
+    if game_type:
+        games = games.filter(type=game_type)
+
+    paginator = Paginator(games, 5)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 

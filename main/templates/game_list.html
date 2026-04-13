@@ -1,8 +1,17 @@
 <h2>Список ігор</h2>
 
 <form method="get">
+
     <input type="text" name="q" placeholder="Пошук гри">
-    <button type="submit">Шукати</button>
+
+    <select name="type">
+        <option value="">Всі типи</option>
+        <option value="single">Singleplayer</option>
+        <option value="online">Online</option>
+        <option value="coop">Coop</option>
+    </select>
+
+    <button type="submit">Фільтрувати</button>
 </form>
 
 <ul>
@@ -11,6 +20,7 @@
         <a href="/games/{{ game.id }}/">
             {{ game.title }}
         </a>
+        ({{ game.get_type_display }})
     </li>
 {% endfor %}
 </ul>
