@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator
 from .models import Game, Comment, UserGame
 
 
@@ -45,7 +46,13 @@ def game_list(request):
     if query:
         games = games.filter(title__icontains=query)
 
-    return render(request, 'game_list.html', {'games': games})
+    paginator = Paginator(games, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'game_list.html', {
+        'page_obj': page_obj
+    })
 
 
 def game_detail(request, game_id):
@@ -78,7 +85,6 @@ def add_to_library(request, game_id):
         status = request.POST.get('status')
         rating = request.POST.get('rating')
 
-        # якщо статус "want" → без оцінки
         if status == 'want':
             rating = None
 
@@ -96,7 +102,6 @@ def add_to_library(request, game_id):
     return render(request, 'add_to_library.html', {'game': game})
 
 
-# 🔥 ПРОФІЛЬ
 def profile_view(request, username):
     user = get_object_or_404(User, username=username)
     user_games = UserGame.objects.filter(user=user)
@@ -107,7 +112,6 @@ def profile_view(request, username):
     })
 
 
-# ✏️ РЕДАГУВАННЯ КОМЕНТАРЯ
 def edit_comment(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
 
@@ -122,7 +126,6 @@ def edit_comment(request, comment_id):
     return render(request, 'edit_comment.html', {'comment': comment})
 
 
-# 🗑 ВИДАЛЕННЯ КОМЕНТАРЯ
 def delete_comment(request, comment_id):
     comment = get_object_or_404(Comment, id=comment_id)
 
