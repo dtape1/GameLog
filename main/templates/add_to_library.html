@@ -4,18 +4,13 @@
     {% csrf_token %}
 
     <label>Статус:</label>
-    <select name="status" id="statusSelect">
-        <option value="want">Хочу пройти</option>
-        <option value="playing">Проходжу</option>
-        <option value="completed">Пройшов</option>
-        <option value="dropped">Кинув</option>
-    </select>
+    <select name="status" id="statusSelect"></select>
 
     <br><br>
 
-    <label>Оцінка: <span id="ratingValue">5</span></label>
-    <br>
-    <input type="range" name="rating" id="ratingInput" min="1" max="10" value="5" disabled>
+    <label>Оцінка (1-10):</label>
+    <input type="range" name="rating" min="1" max="10" id="ratingRange">
+    <span id="ratingValue">5</span>
 
     <br><br>
 
@@ -23,21 +18,32 @@
 </form>
 
 <script>
+    const gameType = "{{ game.type }}";
     const statusSelect = document.getElementById('statusSelect');
-    const ratingInput = document.getElementById('ratingInput');
+    const ratingRange = document.getElementById('ratingRange');
     const ratingValue = document.getElementById('ratingValue');
 
-    statusSelect.addEventListener('change', function() {
-        if (this.value === 'completed' || this.value === 'playing' || this.value === 'dropped') {
-            ratingInput.disabled = false;
-        } else {
-            ratingInput.disabled = true;
-            ratingInput.value = 5;
-            ratingValue.innerText = 5;
-        }
-    });
+    function setStatuses() {
+        statusSelect.innerHTML = '';
 
-    ratingInput.addEventListener('input', function() {
+        if (gameType === 'single') {
+            statusSelect.innerHTML = `
+                <option value="want">Хочу пройти</option>
+                <option value="playing">Проходжу</option>
+                <option value="completed">Пройшов</option>
+                <option value="dropped">Кинув</option>
+            `;
+        } else {
+            statusSelect.innerHTML = `
+                <option value="playing">Грав</option>
+                <option value="dropped">Не грав</option>
+            `;
+        }
+    }
+
+    ratingRange.addEventListener('input', function() {
         ratingValue.innerText = this.value;
     });
+
+    setStatuses();
 </script>

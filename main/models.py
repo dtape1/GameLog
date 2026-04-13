@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from django.core.validators import MinValueValidator, MaxValueValidator
 
 
-# Профіль користувача (1:1 з User)
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar = models.ImageField(upload_to='avatars/', blank=True, null=True)
@@ -13,17 +12,22 @@ class Profile(models.Model):
         return self.user.username
 
 
-# Гра
 class Game(models.Model):
+    GAME_TYPE_CHOICES = [
+        ('single', 'Singleplayer'),
+        ('online', 'Online'),
+        ('coop', 'Co-op'),
+    ]
+
     title = models.CharField(max_length=255)
     description = models.TextField()
     release_date = models.DateField(null=True, blank=True)
+    type = models.CharField(max_length=10, choices=GAME_TYPE_CHOICES, default='single')
 
     def __str__(self):
         return self.title
 
 
-# Зв'язок користувач - гра (M:N через цю таблицю)
 class UserGame(models.Model):
     STATUS_CHOICES = [
         ('want', 'Хочу пройти'),
@@ -45,21 +49,18 @@ class UserGame(models.Model):
         return f"{self.user.username} - {self.game.title}"
 
 
-# Коментарі
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
-    # лайки (користувачі, які лайкнули)
     likes = models.ManyToManyField(User, related_name='liked_comments', blank=True)
 
     def __str__(self):
         return f"Comment by {self.user.username}"
 
 
-# Нотатки
 class Note(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     game = models.ForeignKey(Game, on_delete=models.CASCADE)

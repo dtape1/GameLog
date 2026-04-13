@@ -6,6 +6,7 @@ from django.db.models import Avg
 from .models import Game, Comment, UserGame
 
 
+
 def home(request):
     return render(request, 'home.html')
 
@@ -111,9 +112,14 @@ def profile_view(request, username):
     user = get_object_or_404(User, username=username)
     user_games = UserGame.objects.filter(user=user)
 
+    total_games = user_games.count()
+    avg_rating = user_games.aggregate(Avg('rating'))['rating__avg']
+
     return render(request, 'profile.html', {
         'profile_user': user,
-        'user_games': user_games
+        'user_games': user_games,
+        'total_games': total_games,
+        'avg_rating': avg_rating
     })
 
 

@@ -2,6 +2,8 @@
 
 <p>{{ game.description }}</p>
 
+<p>Тип гри: {{ game.get_type_display }}</p>
+
 <p>
     Середній рейтинг:
     {% if avg_rating %}
