@@ -1,14 +1,21 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from django.core.paginator import Paginator
 from django.db.models import Avg
 from .models import Game, Comment, UserGame
 
 
-
 def home(request):
-    return render(request, 'home.html')
+    # беремо ігри з середнім рейтингом
+    top_games = Game.objects.annotate(
+        avg_rating=Avg('usergame__rating')
+    ).filter(
+        avg_rating__isnull=False
+    ).order_by('-avg_rating')[:5]
+
+    return render(request, 'home.html', {
+        'top_games': top_games
+    })
 
 
 def register_view(request):
@@ -48,21 +55,18 @@ def game_list(request):
     if query:
         games = games.filter(title__icontains=query)
 
-    paginator = Paginator(games, 5)
-    page_number = request.GET.get('page')
-    page_obj = paginator.get_page(page_number)
-
-    return render(request, 'game_list.html', {
-        'page_obj': page_obj
-    })
+    return render(request, 'game_list.html', {'games': games})
 
 
 def game_detail(request, game_id):
     game = get_object_or_404(Game, id=game_id)
+
     comments = Comment.objects.filter(game=game)
 
     # середній рейтинг
-    avg_rating = UserGame.objects.filter(game=game).aggregate(Avg('rating'))['rating__avg']
+    avg_rating = UserGame.objects.filter(game=game).aggregate(
+        Avg('rating')
+    )['rating__avg']
 
     if request.method == 'POST' and request.user.is_authenticated:
         text = request.POST.get('text')
@@ -112,14 +116,9 @@ def profile_view(request, username):
     user = get_object_or_404(User, username=username)
     user_games = UserGame.objects.filter(user=user)
 
-    total_games = user_games.count()
-    avg_rating = user_games.aggregate(Avg('rating'))['rating__avg']
-
     return render(request, 'profile.html', {
         'profile_user': user,
-        'user_games': user_games,
-        'total_games': total_games,
-        'avg_rating': avg_rating
+        'user_games': user_games
     })
 
 
