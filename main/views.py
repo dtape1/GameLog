@@ -145,3 +145,16 @@ def delete_comment(request, comment_id):
         return redirect('game_detail', game_id=game_id)
 
     return redirect('home')
+
+def like_comment(request, comment_id):
+    if not request.user.is_authenticated:
+        return redirect('login')
+
+    comment = get_object_or_404(Comment, id=comment_id)
+
+    if request.user in comment.likes.all():
+        comment.likes.remove(request.user)
+    else:
+        comment.likes.add(request.user)
+
+    return redirect('game_detail', game_id=comment.game.id)

@@ -32,6 +32,12 @@
         </strong>:
         {{ comment.text }}
 
+        (👍 {{ comment.likes.count }})
+
+        {% if user.is_authenticated %}
+            <a href="/comment/{{ comment.id }}/like/">Лайк</a>
+        {% endif %}
+
         {% if comment.user == user %}
             <a href="/comment/{{ comment.id }}/edit/">Редагувати</a>
             <a href="/comment/{{ comment.id }}/delete/">Видалити</a>
