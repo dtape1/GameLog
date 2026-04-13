@@ -11,7 +11,15 @@
         <option value="coop">Coop</option>
     </select>
 
-    <button type="submit">Фільтрувати</button>
+    <select name="sort">
+        <option value="">Без сортування</option>
+        <option value="rating_desc">Рейтинг ↓</option>
+        <option value="rating_asc">Рейтинг ↑</option>
+        <option value="title">Назва (A-Z)</option>
+        <option value="date">Нові спочатку</option>
+    </select>
+
+    <button type="submit">Застосувати</button>
 </form>
 
 <ul>
@@ -21,6 +29,10 @@
             {{ game.title }}
         </a>
         ({{ game.get_type_display }})
+
+        {% if game.avg_rating %}
+            — {{ game.avg_rating|floatformat:1 }}/10
+        {% endif %}
     </li>
 {% endfor %}
 </ul>

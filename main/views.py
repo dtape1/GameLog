@@ -49,9 +49,13 @@ def logout_view(request):
     return redirect('home')
 
 
+from django.db.models import Avg
+from django.core.paginator import Paginator
+
 def game_list(request):
     query = request.GET.get('q')
     game_type = request.GET.get('type')
+    sort = request.GET.get('sort')
 
     games = Game.objects.all()
 
@@ -60,6 +64,19 @@ def game_list(request):
 
     if game_type:
         games = games.filter(type=game_type)
+
+    # додаємо середній рейтинг
+    games = games.annotate(avg_rating=Avg('usergame__rating'))
+
+    # сортування
+    if sort == 'rating_desc':
+        games = games.order_by('-avg_rating')
+    elif sort == 'rating_asc':
+        games = games.order_by('avg_rating')
+    elif sort == 'title':
+        games = games.order_by('title')
+    elif sort == 'date':
+        games = games.order_by('-release_date')
 
     paginator = Paginator(games, 5)
     page_number = request.GET.get('page')
