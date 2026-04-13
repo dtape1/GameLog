@@ -1,0 +1,16 @@
+<h2>Список ігор</h2>
+
+<form method="get">
+    <input type="text" name="q" placeholder="Пошук гри">
+    <button type="submit">Шукати</button>
+</form>
+
+<ul>
+    {% for game in games %}
+        <li>
+            <a href="/games/{{ game.id }}/">{{ game.title }}</a>
+        </li>
+    {% empty %}
+        <li>Немає ігор</li>
+    {% endfor %}
+</ul>

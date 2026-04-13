@@ -1,0 +1,15 @@
+<h2>Профіль: {{ profile_user.username }}</h2>
+
+<h3>Ігри:</h3>
+
+<ul>
+{% for ug in user_games %}
+    <li>
+        {{ ug.game.title }} |
+        {{ ug.status }} |
+        ⭐ {{ ug.rating }}
+    </li>
+{% empty %}
+    <li>Немає ігор</li>
+{% endfor %}
+</ul>

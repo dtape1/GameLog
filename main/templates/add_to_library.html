@@ -1,0 +1,36 @@
+<h2>Додати "{{ game.title }}"</h2>
+
+<form method="post">
+    {% csrf_token %}
+
+    <label>Статус:</label>
+    <select name="status" id="statusSelect">
+        <option value="want">Хочу пройти</option>
+        <option value="playing">Проходжу</option>
+        <option value="completed">Пройшов</option>
+        <option value="dropped">Кинув</option>
+    </select>
+
+    <br><br>
+
+    <label>Оцінка (1-10):</label>
+    <input type="number" name="rating" id="ratingInput" min="1" max="10" disabled>
+
+    <br><br>
+
+    <button type="submit">Зберегти</button>
+</form>
+
+<script>
+    const statusSelect = document.getElementById('statusSelect');
+    const ratingInput = document.getElementById('ratingInput');
+
+    statusSelect.addEventListener('change', function() {
+        if (this.value === 'completed') {
+            ratingInput.disabled = false;
+        } else {
+            ratingInput.disabled = true;
+            ratingInput.value = '';
+        }
+    });
+</script>

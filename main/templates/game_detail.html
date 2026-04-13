@@ -1,0 +1,39 @@
+<h2>{{ game.title }}</h2>
+
+<p>{{ game.description }}</p>
+
+<hr>
+
+{% if user.is_authenticated %}
+    <a href="/games/{{ game.id }}/add/">Додати в бібліотеку</a>
+{% endif %}
+
+<hr>
+
+<h3>Коментарі</h3>
+
+{% for comment in comments %}
+    <p>
+        <strong>
+            <a href="/profile/{{ comment.user.username }}/">
+                {{ comment.user.username }}
+            </a>
+        </strong>:
+        {{ comment.text }}
+
+        {% if comment.user == user %}
+            <a href="/comment/{{ comment.id }}/edit/">✏️</a>
+            <a href="/comment/{{ comment.id }}/delete/">🗑</a>
+        {% endif %}
+    </p>
+{% endfor %}
+
+<hr>
+
+{% if user.is_authenticated %}
+<form method="post">
+    {% csrf_token %}
+    <textarea name="text"></textarea>
+    <button type="submit">Коментувати</button>
+</form>
+{% endif %}

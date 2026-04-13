@@ -1,0 +1,14 @@
+<h1>GameLog</h1>
+
+{% if user.is_authenticated %}
+    <p>Привіт, {{ user.username }}</p>
+
+    <a href="/profile/{{ user.username }}/">Профіль</a><br>
+    <a href="/games/">Список ігор</a><br>
+    <a href="/logout/">Вийти</a>
+
+{% else %}
+    <a href="/login/">Логін</a><br>
+    <a href="/register/">Реєстрація</a><br>
+    <a href="/games/">Список ігор</a>
+{% endif %}
