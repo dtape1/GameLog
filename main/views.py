@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
+from django.db.models import Avg
 from .models import Game, Comment, UserGame
 
 
@@ -59,6 +60,9 @@ def game_detail(request, game_id):
     game = get_object_or_404(Game, id=game_id)
     comments = Comment.objects.filter(game=game)
 
+    # середній рейтинг
+    avg_rating = UserGame.objects.filter(game=game).aggregate(Avg('rating'))['rating__avg']
+
     if request.method == 'POST' and request.user.is_authenticated:
         text = request.POST.get('text')
         if text:
@@ -71,7 +75,8 @@ def game_detail(request, game_id):
 
     return render(request, 'game_detail.html', {
         'game': game,
-        'comments': comments
+        'comments': comments,
+        'avg_rating': avg_rating
     })
 
 

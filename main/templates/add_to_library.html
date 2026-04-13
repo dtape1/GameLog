@@ -13,8 +13,9 @@
 
     <br><br>
 
-    <label>Оцінка (1-10):</label>
-    <input type="number" name="rating" id="ratingInput" min="1" max="10" disabled>
+    <label>Оцінка: <span id="ratingValue">5</span></label>
+    <br>
+    <input type="range" name="rating" id="ratingInput" min="1" max="10" value="5" disabled>
 
     <br><br>
 
@@ -24,13 +25,19 @@
 <script>
     const statusSelect = document.getElementById('statusSelect');
     const ratingInput = document.getElementById('ratingInput');
+    const ratingValue = document.getElementById('ratingValue');
 
     statusSelect.addEventListener('change', function() {
-        if (this.value === 'completed') {
+        if (this.value === 'completed' || this.value === 'playing' || this.value === 'dropped') {
             ratingInput.disabled = false;
         } else {
             ratingInput.disabled = true;
-            ratingInput.value = '';
+            ratingInput.value = 5;
+            ratingValue.innerText = 5;
         }
+    });
+
+    ratingInput.addEventListener('input', function() {
+        ratingValue.innerText = this.value;
     });
 </script>

@@ -2,6 +2,15 @@
 
 <p>{{ game.description }}</p>
 
+<p>
+    Середній рейтинг:
+    {% if avg_rating %}
+        {{ avg_rating|floatformat:1 }} / 10
+    {% else %}
+        Немає оцінок
+    {% endif %}
+</p>
+
 <hr>
 
 {% if user.is_authenticated %}
@@ -22,8 +31,8 @@
         {{ comment.text }}
 
         {% if comment.user == user %}
-            <a href="/comment/{{ comment.id }}/edit/">✏️</a>
-            <a href="/comment/{{ comment.id }}/delete/">🗑</a>
+            <a href="/comment/{{ comment.id }}/edit/">Редагувати</a>
+            <a href="/comment/{{ comment.id }}/delete/">Видалити</a>
         {% endif %}
     </p>
 {% endfor %}
