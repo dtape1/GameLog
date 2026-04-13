@@ -1,5 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
 <h2>Список ігор</h2>
 
+<div class="card">
 <form method="get">
 
     <input type="text" name="q" placeholder="Пошук гри">
@@ -15,40 +20,26 @@
         <option value="">Без сортування</option>
         <option value="rating_desc">Рейтинг ↓</option>
         <option value="rating_asc">Рейтинг ↑</option>
-        <option value="title">Назва (A-Z)</option>
-        <option value="date">Нові спочатку</option>
+        <option value="title">Назва</option>
+        <option value="date">Нові</option>
     </select>
 
     <button type="submit">Застосувати</button>
 </form>
+</div>
 
-<ul>
 {% for game in page_obj %}
-    <li>
-        <a href="/games/{{ game.id }}/">
-            {{ game.title }}
-        </a>
-        ({{ game.get_type_display }})
+<div class="card">
+    <a href="/games/{{ game.id }}/">
+        <h3>{{ game.title }}</h3>
+    </a>
 
-        {% if game.avg_rating %}
-            — {{ game.avg_rating|floatformat:1 }}/10
-        {% endif %}
-    </li>
-{% endfor %}
-</ul>
+    <p>{{ game.get_type_display }}</p>
 
-<hr>
-
-<div>
-    {% if page_obj.has_previous %}
-        <a href="?page=1"><<</a>
-        <a href="?page={{ page_obj.previous_page_number }}">Назад</a>
-    {% endif %}
-
-    Сторінка {{ page_obj.number }} з {{ page_obj.paginator.num_pages }}
-
-    {% if page_obj.has_next %}
-        <a href="?page={{ page_obj.next_page_number }}">Вперед</a>
-        <a href="?page={{ page_obj.paginator.num_pages }}">>></a>
+    {% if game.avg_rating %}
+        <p>{{ game.avg_rating|floatformat:1 }}/10</p>
     {% endif %}
 </div>
+{% endfor %}
+
+{% endblock %}

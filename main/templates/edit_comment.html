@@ -1,8 +1,16 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
 <h2>Редагувати коментар</h2>
 
+<div class="card">
 <form method="post">
     {% csrf_token %}
     <textarea name="text">{{ comment.text }}</textarea>
-    <br>
+    <br><br>
     <button type="submit">Зберегти</button>
 </form>
+</div>
+
+{% endblock %}

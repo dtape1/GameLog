@@ -1,5 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
 <h2>Профіль: {{ profile_user.username }}</h2>
 
+<div class="card">
 <p>Кількість ігор: {{ total_games }}</p>
 
 <p>
@@ -10,27 +15,26 @@
         Немає оцінок
     {% endif %}
 </p>
-
-<hr>
+</div>
 
 <h3>Ігри:</h3>
 
-<ul>
 {% for ug in user_games %}
-    <li>
-        <a href="/games/{{ ug.game.id }}/">
-            {{ ug.game.title }}
-        </a>
-        |
-        {{ ug.get_status_display }}
-        |
-        {% if ug.rating %}
-            ⭐ {{ ug.rating }}
-        {% else %}
-            без оцінки
-        {% endif %}
-    </li>
+<div class="card">
+    <a href="/games/{{ ug.game.id }}/">
+        {{ ug.game.title }}
+    </a>
+
+    <p>{{ ug.get_status_display }}</p>
+
+    {% if ug.rating %}
+        ⭐ {{ ug.rating }}
+    {% else %}
+        без оцінки
+    {% endif %}
+</div>
 {% empty %}
-    <li>Немає ігор</li>
+<p>Немає ігор</p>
 {% endfor %}
-</ul>
+
+{% endblock %}

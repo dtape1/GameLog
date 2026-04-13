@@ -1,5 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
 <h2>Додати "{{ game.title }}"</h2>
 
+<div class="card">
 <form method="post">
     {% csrf_token %}
 
@@ -16,6 +21,7 @@
 
     <button type="submit">Зберегти</button>
 </form>
+</div>
 
 <script>
     const gameType = "{{ game.type }}";
@@ -47,3 +53,5 @@
 
     setStatuses();
 </script>
+
+{% endblock %}

@@ -1,9 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
 <h2>{{ game.title }}</h2>
 
-<p>{{ game.description }}</p>
-
-<p>Тип гри: {{ game.get_type_display }}</p>
-
+<div class="card">
 <p>
     Середній рейтинг:
     {% if avg_rating %}
@@ -13,7 +14,10 @@
     {% endif %}
 </p>
 
-<hr>
+<p>Тип гри: {{ game.get_type_display }}</p>
+
+<p>{{ game.description }}</p>
+</div>
 
 {% if user.is_authenticated %}
     <a href="/games/{{ game.id }}/add/">Додати в бібліотеку</a>
@@ -24,33 +28,38 @@
 <h3>Коментарі</h3>
 
 {% for comment in comments %}
-    <p>
-        <strong>
-            <a href="/profile/{{ comment.user.username }}/">
-                {{ comment.user.username }}
-            </a>
-        </strong>:
-        {{ comment.text }}
+<div class="card">
+    <strong>
+        <a href="/profile/{{ comment.user.username }}/">
+            {{ comment.user.username }}
+        </a>
+    </strong>:
+    {{ comment.text }}
 
-        (👍 {{ comment.likes.count }})
+    <br>
 
-        {% if user.is_authenticated %}
-            <a href="/comment/{{ comment.id }}/like/">Лайк</a>
-        {% endif %}
+    👍 {{ comment.likes.count }}
 
-        {% if comment.user == user %}
-            <a href="/comment/{{ comment.id }}/edit/">Редагувати</a>
-            <a href="/comment/{{ comment.id }}/delete/">Видалити</a>
-        {% endif %}
-    </p>
+    {% if user.is_authenticated %}
+        <a href="/comment/{{ comment.id }}/like/">Лайк</a>
+    {% endif %}
+
+    {% if comment.user == user %}
+        <a href="/comment/{{ comment.id }}/edit/">Редагувати</a>
+        <a href="/comment/{{ comment.id }}/delete/">Видалити</a>
+    {% endif %}
+</div>
 {% endfor %}
 
-<hr>
-
 {% if user.is_authenticated %}
+<div class="card">
 <form method="post">
     {% csrf_token %}
     <textarea name="text"></textarea>
+    <br><br>
     <button type="submit">Коментувати</button>
 </form>
+</div>
 {% endif %}
+
+{% endblock %}

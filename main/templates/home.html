@@ -1,28 +1,19 @@
-<h1>GameLog</h1>
+{% extends 'base.html' %}
 
-{% if user.is_authenticated %}
-<p>Привіт, {{ user.username }}</p>
-<a href="/logout/">Вийти</a>
-{% else %}
-<a href="/login/">Логін</a>
-<a href="/register/">Реєстрація</a>
-{% endif %}
-
-<br><br>
-
-<a href="/games/">Список ігор</a>
-
-<hr>
+{% block content %}
 
 <h2>Топ ігри</h2>
 
 {% for game in top_games %}
-    <p>
-        <a href="/games/{{ game.id }}/">
-            {{ game.title }}
-        </a>
-        — {{ game.avg_rating|floatformat:1 }}/10
-    </p>
+<div class="card">
+    <a href="/games/{{ game.id }}/">
+        <h3>{{ game.title }}</h3>
+    </a>
+
+    <p>{{ game.avg_rating|floatformat:1 }}/10</p>
+</div>
 {% empty %}
-    <p>Ще немає оцінених ігор</p>
+<p>Ще немає оцінених ігор</p>
 {% endfor %}
+
+{% endblock %}
