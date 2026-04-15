@@ -1,65 +1,169 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ game.title }} — GameLog{% endblock %}
 
 {% block content %}
+<div class="container">
 
-<h2>{{ game.title }}</h2>
-
-<div class="card">
-<p>
-    Середній рейтинг:
-    {% if avg_rating %}
-        {{ avg_rating|floatformat:1 }} / 10
+    <!-- банер гри -->
+    {% if game.image %}
+        <img src="{{ game.image.url }}" alt="{{ game.title }}" class="game-banner">
     {% else %}
-        Немає оцінок
-    {% endif %}
-</p>
-
-<p>Тип гри: {{ game.get_type_display }}</p>
-
-<p>{{ game.description }}</p>
-</div>
-
-{% if user.is_authenticated %}
-    <a href="/games/{{ game.id }}/add/">Додати в бібліотеку</a>
-{% endif %}
-
-<hr>
-
-<h3>Коментарі</h3>
-
-{% for comment in comments %}
-<div class="card">
-    <strong>
-        <a href="/profile/{{ comment.user.username }}/">
-            {{ comment.user.username }}
-        </a>
-    </strong>:
-    {{ comment.text }}
-
-    <br>
-
-    👍 {{ comment.likes.count }}
-
-    {% if user.is_authenticated %}
-        <a href="/comment/{{ comment.id }}/like/">Лайк</a>
+        <div class="game-banner-placeholder">🎮</div>
     {% endif %}
 
-    {% if comment.user == user %}
-        <a href="/comment/{{ comment.id }}/edit/">Редагувати</a>
-        <a href="/comment/{{ comment.id }}/delete/">Видалити</a>
-    {% endif %}
-</div>
-{% endfor %}
+    <!-- основний layout: ліво + сайдбар -->
+    <div class="detail-layout">
 
-{% if user.is_authenticated %}
-<div class="card">
-<form method="post">
-    {% csrf_token %}
-    <textarea name="text"></textarea>
-    <br><br>
-    <button type="submit">Коментувати</button>
-</form>
-</div>
-{% endif %}
+        <!-- ліва частина -->
+        <div class="detail-main">
+            <h1 class="game-title-h1">{{ game.title }}</h1>
 
+            <div class="game-tags">
+                <span class="tag">{{ game.get_type_display }}</span>
+                {% if game.release_date %}
+                    <span class="tag">📅 {{ game.release_date|date:"Y" }}</span>
+                {% endif %}
+            </div>
+
+            {% if game.description %}
+                <p class="game-desc">{{ game.description }}</p>
+            {% endif %}
+        </div>
+
+        <!-- правий сайдбар -->
+        <div class="sidebar">
+
+            <!-- рейтинг -->
+            <div class="card">
+                <div class="card-title">Рейтинг</div>
+                {% if avg_rating %}
+                    <div class="big-rating">{{ avg_rating }}</div>
+                    <div class="rating-sub">/ 10 балів</div>
+                {% else %}
+                    <div style="color:var(--text3); font-size:.9rem;">Ще немає оцінок</div>
+                {% endif %}
+            </div>
+
+            <!-- бібліотека -->
+            <div class="card">
+                <div class="card-title">Моя бібліотека</div>
+
+                {% if user.is_authenticated %}
+                    {% if in_library %}
+                        <div class="lib-status">✅ Вже в бібліотеці</div>
+                        {% if user_game.status %}
+                            <div style="margin-bottom:.75rem;">
+                                <span class="status-badge status-{{ user_game.status }}">
+                                    {{ user_game.get_status_display }}
+                                </span>
+                            </div>
+                        {% endif %}
+                        <a href="{% url 'add_to_library' game.id %}" class="btn btn-outline btn-full">
+                            ✏️ Змінити статус / оцінку
+                        </a>
+                    {% else %}
+                        <p style="font-size:.85rem; color:var(--text2); margin-bottom:1rem;">
+                            Додай гру щоб відслідковувати прогрес і поставити оцінку
+                        </p>
+                        <a href="{% url 'add_to_library' game.id %}" class="btn btn-primary btn-full">
+                            + Додати в бібліотеку
+                        </a>
+                    {% endif %}
+                {% else %}
+                    <p style="font-size:.85rem; color:var(--text2); margin-bottom:1rem;">
+                        Увійди щоб додати гру в бібліотеку
+                    </p>
+                    <a href="{% url 'login' %}" class="btn btn-primary btn-full">Увійти</a>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ===== КОМЕНТАРІ ===== -->
+    <div class="comments-section">
+        <div class="comments-head">
+            💬 Коментарі
+            <span style="font-size:.85rem; color:var(--text3); font-weight:400; margin-left:.4rem;">
+                ({{ comments.count }})
+            </span>
+        </div>
+
+        <!-- форма нового коментаря -->
+        {% if user.is_authenticated %}
+        <div class="comment-form-box">
+            <h4>Написати коментар</h4>
+            <form method="post">
+                {% csrf_token %}
+                <textarea name="text" placeholder="Напиши свою думку про гру..."></textarea>
+                <button type="submit" class="btn btn-primary">Відправити</button>
+            </form>
+        </div>
+        {% else %}
+        <div class="comment-form-box" style="text-align:center;">
+            <p style="color:var(--text2); margin-bottom:1rem; font-size:.9rem;">
+                Увійди щоб залишити коментар
+            </p>
+            <a href="{% url 'login' %}" class="btn btn-outline">Увійти</a>
+        </div>
+        {% endif %}
+
+        <!-- список коментарів -->
+        {% if comments %}
+            {% for comment in comments %}
+            <div class="comment">
+                <div class="comment-top">
+                    <div class="comment-author">
+                        <div class="comment-ava">{{ comment.user.username|first|upper }}</div>
+                        <div>
+                            <div class="comment-name">
+                                <a href="{% url 'profile' comment.user.username %}" style="color:var(--text);">
+                                    {{ comment.user.username }}
+                                </a>
+                            </div>
+                            <div class="comment-date">{{ comment.created_at|date:"d.m.Y H:i" }}</div>
+                        </div>
+                    </div>
+
+                    <!-- кнопки тільки для автора -->
+                    {% if user == comment.user %}
+                    <div class="comment-controls">
+                        <a href="{% url 'edit_comment' comment.id %}" class="btn btn-ghost btn-sm">✏️</a>
+                        <form method="post" action="{% url 'delete_comment' comment.id %}" style="display:inline;">
+                            {% csrf_token %}
+                            <button
+                                type="submit"
+                                class="btn btn-danger btn-sm"
+                                onclick="return confirm('Видалити коментар?')"
+                            >🗑️</button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <p class="comment-text">{{ comment.text }}</p>
+
+                <div class="comment-footer">
+                    <form method="post" action="{% url 'like_comment' comment.id %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-ghost btn-sm">
+                            {% if user in comment.likes.all %}❤️{% else %}🤍{% endif %}
+                            {{ comment.likes.count }}
+                        </button>
+                    </form>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty" style="padding:2rem;">
+                <div class="empty-icon">💬</div>
+                <h3>Коментарів ще немає</h3>
+                <p>Будь першим!</p>
+            </div>
+        {% endif %}
+    </div>
+
+</div>
 {% endblock %}

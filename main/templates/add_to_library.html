@@ -1,57 +1,55 @@
 {% extends 'base.html' %}
 
+{% block title %}Додати в бібліотеку — {{ game.title }}{% endblock %}
+
 {% block content %}
+<div class="container">
+    <div class="lib-form-wrap">
 
-<h2>Додати "{{ game.title }}"</h2>
+        <!-- назад -->
+        <a href="{% url 'game_detail' game.id %}" class="btn btn-ghost btn-sm" style="margin-bottom:1.5rem;">
+            ← До гри
+        </a>
 
-<div class="card">
-<form method="post">
-    {% csrf_token %}
+        <div class="card">
+            <h2 style="font-family:'Syne',sans-serif; font-size:1.3rem; font-weight:800; margin-bottom:.4rem;">
+                {{ game.title }}
+            </h2>
+            <p style="color:var(--text2); font-size:.9rem; margin-bottom:1.5rem;">
+                {% if existing %}Оновити запис у бібліотеці{% else %}Додати в бібліотеку{% endif %}
+            </p>
 
-    <label>Статус:</label>
-    <select name="status" id="statusSelect"></select>
+            <form method="post">
+                {% csrf_token %}
 
-    <br><br>
+                <div class="field">
+                    <label>Статус</label>
+                    <select name="status" required>
+                        <option value="want" {% if existing.status == 'want' %}selected{% endif %}>Хочу пройти</option>
+                        <option value="playing" {% if existing.status == 'playing' %}selected{% endif %}>Проходжу</option>
+                        <option value="completed" {% if existing.status == 'completed' %}selected{% endif %}>Пройшов</option>
+                        <option value="dropped" {% if existing.status == 'dropped' %}selected{% endif %}>Кинув</option>
+                    </select>
+                </div>
 
-    <label>Оцінка (1-10):</label>
-    <input type="range" name="rating" min="1" max="10" id="ratingRange">
-    <span id="ratingValue">5</span>
+                <div class="field">
+                    <label>Оцінка (необов'язково)</label>
+                    <select name="rating">
+                        <option value="">— без оцінки —</option>
+                        {% for i in rating_range %}
+                            <option value="{{ i }}" {% if existing.rating == i %}selected{% endif %}>
+                                {{ i }} / 10
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
 
-    <br><br>
+                <button type="submit" class="btn btn-primary btn-full">
+                    {% if existing %}Зберегти зміни{% else %}Додати в бібліотеку{% endif %}
+                </button>
+            </form>
+        </div>
 
-    <button type="submit">Зберегти</button>
-</form>
+    </div>
 </div>
-
-<script>
-    const gameType = "{{ game.type }}";
-    const statusSelect = document.getElementById('statusSelect');
-    const ratingRange = document.getElementById('ratingRange');
-    const ratingValue = document.getElementById('ratingValue');
-
-    function setStatuses() {
-        statusSelect.innerHTML = '';
-
-        if (gameType === 'single') {
-            statusSelect.innerHTML = `
-                <option value="want">Хочу пройти</option>
-                <option value="playing">Проходжу</option>
-                <option value="completed">Пройшов</option>
-                <option value="dropped">Кинув</option>
-            `;
-        } else {
-            statusSelect.innerHTML = `
-                <option value="playing">Грав</option>
-                <option value="dropped">Не грав</option>
-            `;
-        }
-    }
-
-    ratingRange.addEventListener('input', function() {
-        ratingValue.innerText = this.value;
-    });
-
-    setStatuses();
-</script>
-
 {% endblock %}

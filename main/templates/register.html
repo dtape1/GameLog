@@ -1,18 +1,38 @@
 {% extends 'base.html' %}
 
+{% block title %}Реєстрація — GameLog{% endblock %}
+
 {% block content %}
+<div class="auth-wrap">
+    <div class="auth-box">
+        <h1 class="auth-title">🎮 Реєстрація</h1>
 
-<h2>Реєстрація</h2>
+        {% if error %}
+            <div class="alert alert-danger" style="margin-bottom:1rem;">{{ error }}</div>
+        {% endif %}
 
-<div class="card">
-<form method="post">
-    {% csrf_token %}
-    <input type="text" name="username" placeholder="Username">
-    <br><br>
-    <input type="password" name="password" placeholder="Password">
-    <br><br>
-    <button type="submit">Зареєструватися</button>
-</form>
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="field">
+                <label>Нікнейм</label>
+                <input type="text" name="username" placeholder="Придумай нікнейм" required autofocus>
+            </div>
+
+            <div class="field">
+                <label>Пароль</label>
+                <input type="password" name="password" placeholder="Придумай пароль" required>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-full" style="margin-top:.5rem;">
+                Зареєструватись
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            Вже маєш акаунт?
+            <a href="{% url 'login' %}">Увійти</a>
+        </div>
+    </div>
 </div>
-
 {% endblock %}

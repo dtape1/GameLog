@@ -1,45 +1,108 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Каталог ігор — GameLog{% endblock %}
 
 {% block content %}
+<div class="container">
 
-<h2>Список ігор</h2>
+    <div class="page-top">
+        <h1 class="page-title">🎮 Каталог ігор</h1>
+    </div>
 
-<div class="card">
-<form method="get">
+    <!-- фільтри -->
+    <form method="get" class="filters">
+        <input
+            type="text"
+            name="q"
+            value="{{ query }}"
+            placeholder="🔍 Пошук за назвою..."
+        >
 
-    <input type="text" name="q" placeholder="Пошук гри">
+        <select name="type">
+            <option value="">Всі типи</option>
+            <option value="single" {% if game_type == 'single' %}selected{% endif %}>Singleplayer</option>
+            <option value="online" {% if game_type == 'online' %}selected{% endif %}>Online</option>
+            <option value="coop" {% if game_type == 'coop' %}selected{% endif %}>Co-op</option>
+        </select>
 
-    <select name="type">
-        <option value="">Всі типи</option>
-        <option value="single">Singleplayer</option>
-        <option value="online">Online</option>
-        <option value="coop">Coop</option>
-    </select>
+        <select name="sort">
+            <option value="">Сортування</option>
+            <option value="rating_desc" {% if sort == 'rating_desc' %}selected{% endif %}>Рейтинг ↓</option>
+            <option value="rating_asc" {% if sort == 'rating_asc' %}selected{% endif %}>Рейтинг ↑</option>
+            <option value="title" {% if sort == 'title' %}selected{% endif %}>Назва А-Я</option>
+            <option value="date" {% if sort == 'date' %}selected{% endif %}>Нові</option>
+        </select>
 
-    <select name="sort">
-        <option value="">Без сортування</option>
-        <option value="rating_desc">Рейтинг ↓</option>
-        <option value="rating_asc">Рейтинг ↑</option>
-        <option value="title">Назва</option>
-        <option value="date">Нові</option>
-    </select>
+        <button type="submit" class="btn btn-primary">Застосувати</button>
+        <a href="{% url 'game_list' %}" class="btn btn-ghost">Скинути</a>
+    </form>
 
-    <button type="submit">Застосувати</button>
-</form>
-</div>
+    <!-- grid ігор -->
+    {% if page_obj %}
+        <div class="games-grid">
+            {% for game in page_obj %}
+            <a href="{% url 'game_detail' game.id %}" style="text-decoration:none; color:inherit;">
+                <div class="game-card">
+                    {% if game.image %}
+                        <img src="{{ game.image.url }}" alt="{{ game.title }}" class="game-card-img">
+                    {% else %}
+                        <div class="game-card-placeholder">🎮</div>
+                    {% endif %}
 
-{% for game in page_obj %}
-<div class="card">
-    <a href="/games/{{ game.id }}/">
-        <h3>{{ game.title }}</h3>
-    </a>
+                    <div class="game-card-body">
+                        <div class="game-card-title">{{ game.title }}</div>
+                        <div class="game-card-type">{{ game.get_type_display }}</div>
+                    </div>
 
-    <p>{{ game.get_type_display }}</p>
+                    <div class="game-card-footer">
+                        {% if game.avg_rating %}
+                            <span class="rating-pill has">⭐ {{ game.avg_rating|floatformat:1 }}</span>
+                        {% else %}
+                            <span class="rating-pill none">Без оцінок</span>
+                        {% endif %}
 
-    {% if game.avg_rating %}
-        <p>{{ game.avg_rating|floatformat:1 }}/10</p>
+                        {% if game.release_date %}
+                            <span style="font-size:.75rem; color:var(--text3);">
+                                {{ game.release_date|date:"Y" }}
+                            </span>
+                        {% endif %}
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+
+        <!-- пагінація -->
+        {% if page_obj.paginator.num_pages > 1 %}
+        <div class="pagination">
+            {% if page_obj.has_previous %}
+                <a href="?page=1&q={{ query }}&type={{ game_type }}&sort={{ sort }}" class="page-btn">«</a>
+                <a href="?page={{ page_obj.previous_page_number }}&q={{ query }}&type={{ game_type }}&sort={{ sort }}" class="page-btn">‹</a>
+            {% endif %}
+
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                    <span class="page-btn cur">{{ num }}</span>
+                {% elif num > page_obj.number|add:"-3" and num < page_obj.number|add:"3" %}
+                    <a href="?page={{ num }}&q={{ query }}&type={{ game_type }}&sort={{ sort }}" class="page-btn">{{ num }}</a>
+                {% endif %}
+            {% endfor %}
+
+            {% if page_obj.has_next %}
+                <a href="?page={{ page_obj.next_page_number }}&q={{ query }}&type={{ game_type }}&sort={{ sort }}" class="page-btn">›</a>
+                <a href="?page={{ page_obj.paginator.num_pages }}&q={{ query }}&type={{ game_type }}&sort={{ sort }}" class="page-btn">»</a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+    {% else %}
+        <div class="empty">
+            <div class="empty-icon">🔍</div>
+            <h3>Нічого не знайдено</h3>
+            <p>Спробуй змінити пошук або скинути фільтри</p>
+        </div>
     {% endif %}
-</div>
-{% endfor %}
 
+</div>
 {% endblock %}

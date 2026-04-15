@@ -1,40 +1,96 @@
 {% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ profile_user.username }} — GameLog{% endblock %}
 
 {% block content %}
+<div class="container">
 
-<h2>Профіль: {{ profile_user.username }}</h2>
+    <!-- шапка профілю -->
+    <div class="profile-top">
+        <div class="profile-ava">
+            {% if profile and profile.avatar %}
+                <img src="{{ profile.avatar.url }}" alt="аватар">
+            {% else %}
+                {{ profile_user.username|first|upper }}
+            {% endif %}
+        </div>
 
-<div class="card">
-<p>Кількість ігор: {{ total_games }}</p>
+        <div style="flex:1;">
+            <div class="profile-username">{{ profile_user.username }}</div>
 
-<p>
-    Середній рейтинг:
-    {% if avg_rating %}
-        {{ avg_rating|floatformat:1 }} / 10
+            {% if profile and profile.bio %}
+                <div class="profile-bio">{{ profile.bio }}</div>
+            {% endif %}
+
+            <div class="profile-stats">
+                <div class="stat-item">
+                    <div class="stat-val">{{ total_games }}</div>
+                    <div class="stat-label">Ігор</div>
+                </div>
+
+                {% if avg_rating %}
+                <div class="stat-item">
+                    <div class="stat-val">{{ avg_rating }}</div>
+                    <div class="stat-label">Сер. оцінка</div>
+                </div>
+                {% endif %}
+
+                <div class="stat-item">
+                    <div class="stat-val">{{ profile_user.comment_set.count }}</div>
+                    <div class="stat-label">Коментарів</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- бібліотека ігор -->
+    <div class="section-title">🎮 Бібліотека ігор</div>
+
+    {% if user_games %}
+        <div class="games-grid">
+            {% for ug in user_games %}
+            <a href="{% url 'game_detail' ug.game.id %}" style="text-decoration:none; color:inherit;">
+                <div class="game-card">
+                    {% if ug.game.image %}
+                        <img src="{{ ug.game.image.url }}" alt="{{ ug.game.title }}" class="game-card-img">
+                    {% else %}
+                        <div class="game-card-placeholder">🎮</div>
+                    {% endif %}
+
+                    <div class="game-card-body">
+                        <div class="game-card-title">{{ ug.game.title }}</div>
+                        <div style="margin-top:.25rem;">
+                            <span class="status-badge status-{{ ug.status }}">
+                                {{ ug.get_status_display }}
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="game-card-footer">
+                        {% if ug.rating %}
+                            <span class="rating-pill has">⭐ {{ ug.rating }}/10</span>
+                        {% else %}
+                            <span class="rating-pill none">Не оцінено</span>
+                        {% endif %}
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
     {% else %}
-        Немає оцінок
+        <div class="empty">
+            <div class="empty-icon">🎮</div>
+            <h3>Бібліотека порожня</h3>
+            {% if user == profile_user %}
+                <p>
+                    Додай ігри з <a href="{% url 'game_list' %}">каталогу</a>
+                </p>
+            {% else %}
+                <p>Цей користувач ще нічого не додав</p>
+            {% endif %}
+        </div>
     {% endif %}
-</p>
+
 </div>
-
-<h3>Ігри:</h3>
-
-{% for ug in user_games %}
-<div class="card">
-    <a href="/games/{{ ug.game.id }}/">
-        {{ ug.game.title }}
-    </a>
-
-    <p>{{ ug.get_status_display }}</p>
-
-    {% if ug.rating %}
-        ⭐ {{ ug.rating }}
-    {% else %}
-        без оцінки
-    {% endif %}
-</div>
-{% empty %}
-<p>Немає ігор</p>
-{% endfor %}
-
 {% endblock %}

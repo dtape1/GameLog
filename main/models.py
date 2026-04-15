@@ -23,9 +23,20 @@ class Game(models.Model):
     description = models.TextField()
     release_date = models.DateField(null=True, blank=True)
     type = models.CharField(max_length=10, choices=GAME_TYPE_CHOICES, default='single')
+    # нове поле для картинки гри
+    image = models.ImageField(upload_to='game_images/', blank=True, null=True)
 
     def __str__(self):
         return self.title
+
+    # метод для середнього рейтингу - зручно викликати прямо в шаблоні
+    def average_rating(self):
+        from django.db.models import Avg
+        result = self.usergame_set.filter(rating__isnull=False).aggregate(Avg('rating'))
+        avg = result['rating__avg']
+        if avg:
+            return round(avg, 1)
+        return None
 
 
 class UserGame(models.Model):
@@ -54,7 +65,6 @@ class Comment(models.Model):
     game = models.ForeignKey(Game, on_delete=models.CASCADE)
     text = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
-
     likes = models.ManyToManyField(User, related_name='liked_comments', blank=True)
 
     def __str__(self):
