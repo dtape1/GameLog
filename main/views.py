@@ -7,16 +7,13 @@ from django.core.paginator import Paginator
 
 
 def home(request):
-    # топ 5 ігор за рейтингом для головної
     top_games = Game.objects.annotate(
         avg_rating=Avg('usergame__rating')
     ).filter(
         avg_rating__isnull=False
     ).order_by('-avg_rating')[:5]
 
-    return render(request, 'home.html', {
-        'top_games': top_games
-    })
+    return render(request, 'home.html', {'top_games': top_games})
 
 
 def register_view(request):
@@ -25,7 +22,6 @@ def register_view(request):
         username = request.POST['username']
         password = request.POST['password']
 
-        # перевіряємо чи не зайнятий юзернейм
         if User.objects.filter(username=username).exists():
             error = 'Цей нікнейм вже зайнятий'
         else:
@@ -40,7 +36,6 @@ def login_view(request):
     if request.method == 'POST':
         username = request.POST['username']
         password = request.POST['password']
-
         user = authenticate(request, username=username, password=password)
 
         if user:
@@ -70,9 +65,9 @@ def game_list(request):
     if game_type:
         games = games.filter(type=game_type)
 
-    # додаємо середній рейтинг до кожної гри
     games = games.annotate(avg_rating=Avg('usergame__rating'))
 
+    # сортування - дефолт 'id' щоб прибрати UnorderedObjectListWarning
     if sort == 'rating_desc':
         games = games.order_by('-avg_rating')
     elif sort == 'rating_asc':
@@ -81,8 +76,10 @@ def game_list(request):
         games = games.order_by('title')
     elif sort == 'date':
         games = games.order_by('-release_date')
+    else:
+        games = games.order_by('id')
 
-    paginator = Paginator(games, 8)  # 8 карточок на сторінці
+    paginator = Paginator(games, 8)
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
@@ -98,14 +95,12 @@ def game_detail(request, game_id):
     game = get_object_or_404(Game, id=game_id)
     comments = Comment.objects.filter(game=game).order_by('-created_at')
 
-    # середній рейтинг
     avg_rating = UserGame.objects.filter(game=game).aggregate(
         Avg('rating')
     )['rating__avg']
     if avg_rating:
         avg_rating = round(avg_rating, 1)
 
-    # чи є гра в бібліотеці поточного юзера
     in_library = False
     user_game = None
     if request.user.is_authenticated:
@@ -115,15 +110,10 @@ def game_detail(request, game_id):
         except UserGame.DoesNotExist:
             pass
 
-    # обробка форми нового коментаря
     if request.method == 'POST' and request.user.is_authenticated:
         text = request.POST.get('text')
         if text:
-            Comment.objects.create(
-                user=request.user,
-                game=game,
-                text=text
-            )
+            Comment.objects.create(user=request.user, game=game, text=text)
             return redirect('game_detail', game_id=game.id)
 
     return render(request, 'game_detail.html', {
@@ -150,17 +140,14 @@ def add_to_library(request, game_id):
             rating = None
 
         user_game, created = UserGame.objects.get_or_create(
-            user=request.user,
-            game=game
+            user=request.user, game=game
         )
-
         user_game.status = status
         user_game.rating = rating if rating else None
         user_game.save()
 
         return redirect('game_detail', game_id=game.id)
 
-    # перевіряємо чи вже є в бібліотеці
     existing = None
     try:
         existing = UserGame.objects.get(user=request.user, game=game)
@@ -178,14 +165,12 @@ def profile_view(request, username):
     profile_user = get_object_or_404(User, username=username)
     user_games = UserGame.objects.filter(user=profile_user).select_related('game')
 
-    # середній рейтинг по іграх юзера
     avg_rating = user_games.filter(rating__isnull=False).aggregate(
         Avg('rating')
     )['rating__avg']
     if avg_rating:
         avg_rating = round(avg_rating, 1)
 
-    # намагаємось отримати профіль (якщо не існує - нічого страшного)
     profile = None
     try:
         profile = profile_user.profile

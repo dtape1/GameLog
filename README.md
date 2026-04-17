@@ -25,14 +25,167 @@ GameLog — це веб-додаток для ведення щоденника 
 ## Документація
 
 - Технічне завдання: `docs/technical_specification.md`
-- UML діаграми: 
-1. USE CASE
-https://mermaid.live/edit#pako:eNp1U8tu2kAU_RVr1oBiB5yJF5GiRO2mlar0sShmMYonxioeI2PUB0IiULVdVKWLiEXS16IfQAJIiATyC3f-qHcmhriF7rjce84959xxixxHHicO8WNWrxrPDl3hiucNHpfhHBayA1N5KruyB1cwlB8rrtj3wkCU4SuM4UYOYC4HeqCD7a4CVJYERj6_ZxxxP2gkiu0XTOTZavQDwvqVzOCjyFe0F7CAkaLN9l4E_PVDFvJGGX4iSwcmMIJr2YexIU_hVkmEmewZiBulElbYp5zFx1UFXMhPaGO2cepBUNMif2PzWn7-n8ilkHUdKBqjys7ue97d6BlaGut0pnpMCe0ZcImrLhE9QC1dZEIDWfgRSxD7Q2mAOTq8R2enDqIw5CIpw3cYpkGki2a49QZp51gO_zarXDyJo5OgtsnILZYL-V4H8UUfU19cIx8zwXyenuJcIe8eBiqcy75OVgWHi6eVdZwSsBGnxP770jax4EONMZbUNFJ909FO7o-15hslXVVIDl934BEniZs8R0Ieh0yVpOUKw3BJUuUhd4mDPz0Wv3KJK9qIqTPxMorCJSyOmn6VOCes1sCqWfdQymHA8LsJV__GXKDGg6gpEuJQU3MQp0XeECdv2rRAd0sls2jb9jbdtXLkLXFMq1QwTcsqWtsWVR3azpF3eq1Z2NrZ2aJ2yaaWSWmJFtt_AFtN0Cg 
-2. CLASS DIAGRAM
-https://mermaid.live/edit#pako:eNp9UsFu4jAQ_ZVojitAcRKWxIdeqNRb1Usvq0jVbDwFq4mN7ElpF_Hva5tQhNRy8nvJe2884zlAZxWBhK5H7-81bhwOrWlN4tmzJ5cdWpNlY0AGB4qYBtR9BLug2VunWnO8eJ6cfdU9nWz4jowuor_aXskeQthJw5r7lKvId07vWFsTqaOe0NOLQqYra7zVxe4ZefTJgKzN5kq6tsNAhqdC9MHx7ByFSPWCfKV9tDxFdtZwcE1_0xBaEC1k8_ndhM5dymyL_hvNr4C-7ikzuzdBlcgNVa_NG6lY81vluZlbNS-avdNM_sew1O2tpElwioEZbJxWINmNNIOBXNiBQCHNqwXeUtgNkAEqdG8thNkFzw7NH2uHs83ZcbMF-Yq9D2zcxZeddu7rqyOjyK3taBikKFIGyAN8RCYWTVE2-UrUxUosRT2DT5CFqBZ1U9aroszzQuTl8jiDf6lsvlj-bpZFJZqqKuu6KsXxPwZA8wY
-3. SEQUENCE DIAGRAM
-https://mermaid.ai/live/edit#pako:eNplkM1Kw0AUhV8l3HVb0rSTpLPoogZcuHAhbiSboRnboJnUSQLWUugPuHQh4lLwDbQi1Ir1FWbeyDupLRZ39575zjmXGUE3jThQyPhVwUWXBzHrSZaEIhQDJvO4Gw-YyK3TjMt95WSY5TzZ14KO8Rm22m5vAGqpJ_WqlnqiXvSDpd70RM__M_d6qmfqRX2ptVqoT32H7EbSMz3XU8uMllrrW_2I0MpkbMyYEnQw4RmJBQKT0mvyD1nCQxF0qn-Kjo92PlQNVR74W6vecVqqD6xW33jzFOUVVKAn4whoLgtegYTLhJkVRqGwrBDyPsceoDhGTF6EEIoxevBDztI02dpkWvT6QM_ZZYZbMYhYvv3rHcJFxOVBWogcaL1RRgAdwTVQr1mzHa_l2jbx_Jbn4OPQME7NdnH3Gi7xSbPljytwU5baNZcQ366TRpM0_brjkfEP6ZHKQg
-- Trello: https://trello.com/b/qdHWW7y2/gamelog
+
+## UML діаграми
+### Use Case
+```mermaid
+graph TD
+    User([Користувач])
+    Admin([Адміністратор])
+
+    subgraph auth [Авторизація]
+        Register[Реєстрація]
+        Login[Вхід в систему]
+        Logout[Вихід]
+    end
+
+    subgraph games [Робота з іграми]
+        ViewList[Перегляд списку ігор]
+        Search[Пошук за назвою]
+        Filter[Фільтрація за типом]
+        Sort[Сортування]
+        ViewDetail[Перегляд деталей гри]
+    end
+
+    subgraph library [Бібліотека]
+        AddToLib[Додати гру в бібліотеку]
+        SetStatus[Встановити статус]
+        SetRating[Виставити оцінку]
+    end
+
+    subgraph comments [Коментарі]
+        WriteComment[Написати коментар]
+        EditComment[Редагувати коментар]
+        DeleteComment[Видалити коментар]
+        LikeComment[Лайкнути коментар]
+    end
+
+    subgraph profile [Профіль]
+        ViewProfile[Переглянути профіль]
+        ViewStats[Статистика ігор]
+    end
+
+    subgraph admin [Адмін-панель]
+        ManageGames[Керування іграми]
+        ManageUsers[Керування користувачами]
+        ModerateComments[Модерація коментарів]
+    end
+
+    User --> Register
+    User --> Login
+    User --> Logout
+    User --> ViewList
+    User --> Search
+    User --> Filter
+    User --> Sort
+    User --> ViewDetail
+    User --> AddToLib
+    User --> SetStatus
+    User --> SetRating
+    User --> WriteComment
+    User --> EditComment
+    User --> DeleteComment
+    User --> LikeComment
+    User --> ViewProfile
+    User --> ViewStats
+
+    Admin --> ManageGames
+    Admin --> ManageUsers
+    Admin --> ModerateComments
+    Admin --> Login
+```
+
+### Class Diagram
+```mermaid
+classDiagram
+    class User {
+        +int id
+        +str username
+        +str password
+    }
+
+    class Profile {
+        +int id
+        +ImageField avatar
+        +str bio
+        +__str__() str
+    }
+
+    class Game {
+        +int id
+        +str title
+        +str description
+        +DateField release_date
+        +str type
+        +ImageField image
+        +__str__() str
+        +average_rating() float
+    }
+
+    class UserGame {
+        +int id
+        +str status
+        +int rating
+        +__str__() str
+    }
+
+    class Comment {
+        +int id
+        +str text
+        +DateTimeField created_at
+        +__str__() str
+    }
+
+    class Note {
+        +int id
+        +str content
+        +__str__() str
+    }
+
+    User "1" --> "1" Profile : має
+    User "1" --> "0..*" UserGame : додає
+    User "1" --> "0..*" Comment : пише
+    User "1" --> "0..*" Note : створює
+    User "0..*" --> "0..*" Comment : лайкає
+
+    Game "1" --> "0..*" UserGame : входить в
+    Game "1" --> "0..*" Comment : має
+    Game "1" --> "0..*" Note : має
+```
+
+### Sequence Diagram
+```mermaid
+sequenceDiagram
+    actor User as Користувач
+    participant Browser as Браузер
+    participant View as views.py
+    participant DB as База даних
+
+    User->>Browser: Відкриває сторінку гри /games/1/
+    Browser->>View: GET /games/1/
+    View->>DB: Game.objects.get(id=1)
+    DB-->>View: об'єкт Game
+    View->>DB: UserGame.objects.get(user, game)
+    DB-->>View: in_library = False
+    View-->>Browser: game_detail.html
+    Browser-->>User: Показує кнопку Додати в бібліотеку
+
+    User->>Browser: Натискає Додати в бібліотеку
+    Browser->>View: GET /games/1/add/
+    View-->>Browser: add_to_library.html
+    Browser-->>User: Показує форму зі статусом і оцінкою
+
+    User->>Browser: Вибирає статус completed оцінка 9
+    Browser->>View: POST /games/1/add/ status=completed rating=9
+    View->>DB: UserGame.objects.get_or_create(user, game)
+    DB-->>View: створено новий запис
+    View->>DB: user_game.status = completed
+    View->>DB: user_game.rating = 9
+    View->>DB: user_game.save()
+    DB-->>View: збережено
+    View-->>Browser: redirect /games/1/
+    Browser-->>User: Показує в бібліотеці
+```
 
 ## Команда
 
